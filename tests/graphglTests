@@ -1,0 +1,73 @@
+query {
+  allAuthors {
+    name
+    bookCount
+  }
+}
+
+query($author: String) {
+  bookCount(author: "Fyodor Dostoevsky")
+}
+
+query {
+  bookCount
+}
+
+query {
+  allBooks {
+    author
+    title
+  }
+}
+
+query {
+  allBooks(author: "Robert Martin") {
+    title
+  }
+}
+
+query {
+  allBooks(author: "Robert Martin", genre: "refactoring") {
+    title
+    author
+  }
+}
+
+mutation {
+  addBook(
+    title: "NoSQL Distilled",
+    author: "Martin Fowler",
+    published: 2012,
+    genres: ["database", "nosql"]
+  ) {
+    title,
+    author
+  }
+}
+
+mutation {
+  addBook(
+    title: "Pimeyden tango",
+    author: "Reijo Mäki",
+    published: 1997,
+    genres: ["crime"]
+  ) {
+    title,
+    author
+  }
+}
+
+query {
+  allAuthors {
+    name
+    born
+    bookCount
+  }
+}
+
+mutation {
+  editAuthor(name: "Reijo Mäki", setBornTo: 1958) {
+    name
+    born
+  }
+}
