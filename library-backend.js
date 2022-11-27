@@ -109,39 +109,44 @@ const typeDefs = gql`
   }
 
   type Query {
-    allBooks(author: String): [Book!]
+    allBooks(author: String, genre: String): [Book!]
     allAuthors: [Author!]
     bookCount(author: String): Int!
     authorCount: Int!
   }
 `
 
-const bookCount = (author) => {
-  if (!author) {
-    return books.length
+const filterBy = (list, propertyToFilter, valueToFilter) => {
+  if (!valueToFilter) {
+    return list
   } else {
-    return books
-            .filter(book => book.author === author)
-            .length
+    return list.filter(item => item[propertyToFilter] === valueToFilter)
+  }
+}
+
+const includedInList = (list, propertyToCompare, valueToCompare) => {
+  if (!valueToCompare) {
+    return list
+  } else {
+    return list.filter(item => item[propertyToCompare].includes(valueToCompare))
   }
 }
 
 const resolvers = {
   Author: {
-    bookCount: ({ name }) => bookCount(name)
+    bookCount: ({ name }) => filterBy(books, "author", name).length
   },
 
   Query: {
     allBooks: (root, args) => {
-      if (!args.author) {
-        return books
-      } else {
-        return books.filter((book) => book.author === args.author)
-      }
+      let filteredResult = includedInList(books, "genres", args.genre)
+      filteredResult = filterBy(filteredResult, "author", args.author)
+
+      return filteredResult
     },
     allAuthors: () => authors,
     bookCount: (root, args) => {
-      return bookCount(args.author)
+      return filterBy(books, "author", args.author).length
     },
     authorCount: () => authors.length
   }
