@@ -1,28 +1,20 @@
-import { useState, useEffect } from 'react'
-import { getAuthors, getBooks } from './services/apolloClient'
+import { useQuery, } from '@apollo/client'
+import { GET_AUTHORS, GET_BOOKS } from './services/queries'
 import NavBar from './components/NavBar'
 
 
 const App = () => {
 
-  const [books, setBooks] = useState({ })
-  const [authors, setAuthors] = useState({ })
+  const authors = useQuery(GET_AUTHORS)
+  const books = useQuery(GET_BOOKS)
 
-  useEffect(() => {
-    const fetchData = async () => {
-      const books = await getBooks()
-      const authors = await getAuthors()
-
-      setBooks(books.data.allBooks)
-      setAuthors(authors.data.allAuthors)
-    }
-
-    fetchData()
-  }, [])
+  if (authors.loading || books.loading)  {
+    return <div>loading...</div>
+  }
 
   return (
     <>
-      <NavBar authors={authors} books={books} />
+      <NavBar authors={authors.data.allAuthors} books={books.data.allBooks} />
     </>
   );
 }
