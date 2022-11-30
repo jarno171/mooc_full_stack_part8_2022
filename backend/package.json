@@ -20,7 +20,9 @@
   "homepage": "https://github.com/jarno171/mooc_full_stack_part8_2022#readme",
   "dependencies": {
     "apollo-server": "^3.11.1",
-    "graphql": "^16.6.0"
+    "dotenv": "^16.0.3",
+    "graphql": "^16.6.0",
+    "mongoose": "^6.7.4"
   },
   "devDependencies": {
     "nodemon": "^2.0.20"
