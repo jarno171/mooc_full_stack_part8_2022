@@ -2,6 +2,7 @@ import { useState, } from 'react'
 import _ from 'lodash'
 import { useMutation } from '@apollo/client'
 import { EDIT_BORN, GET_AUTHORS } from '../services/queries'
+import Select from 'react-select'
 
 
 const Authors = ({ authors }) => {
@@ -23,6 +24,8 @@ const Authors = ({ authors }) => {
   }
 
   if (!_.isEmpty(authors)) {
+    const options = authors.map((author) => { return { value: author.name, label: author.name } } )
+
     return (
       <>
         <div>
@@ -52,15 +55,12 @@ const Authors = ({ authors }) => {
 
         <div>
           <form onSubmit={editBorn}>
-            <p>
-              name:
-              <input
-                type="text"
-                value={name}
-                onChange={(event) => setName(event.target.value)}
-                name="name"
-              />
-            </p>
+            name:
+            <Select options={options} 
+              value={ { value: name, label: name } }
+              onChange={(event) => setName(event.value)}
+            />
+            
             <p>
               born:
               <input
