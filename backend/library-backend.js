@@ -49,9 +49,20 @@ const resolvers = {
 
   Query: {
     allBooks: async (root, args) => {
-      return Book.find({})
+
+      if (!args.genre) {
+        return Book.find({})
+      }
+
+      return Book.find( { genres: { $in: [ args.genre ] } } )
     },
-    allAuthors: async () => Author.find({}),
+    allAuthors: async (root, args) => {
+      if (!args.author) {
+        return Author.find({})
+      }
+
+      return Author.find( { name: { $in: [ args.author ] } } )
+    },
     bookCount: async (root, args) => {
       return Book.collection.countDocuments( { author: args.author } )
     },
@@ -75,7 +86,12 @@ const resolvers = {
     },
     editAuthor: async (root, args) => {
       const author = await Author.findOne({ name: args.name })
-      author.born = args.born
+      if (!author) {
+        return null
+      }
+
+      author.born = args.setBornTo
+
       return author.save()
     }
   }
