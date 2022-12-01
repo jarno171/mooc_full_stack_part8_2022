@@ -5,6 +5,7 @@ const config = require('./utils/config')
 
 const Book = require('./models/book')
 const Author = require('./models/author')
+const User = require('./models/user')
 
 mongoose.connect(config.MONGODB_URI)
 
@@ -24,11 +25,22 @@ const typeDefs = gql`
     id: ID!
   }
 
+  type User {
+    username: String!
+    favouriteGenre: String!
+    id: ID!
+  }
+  
+  type Token {
+    value: String!
+  }
+
   type Query {
     allBooks(author: String, genre: String): [Book!]
     allAuthors: [Author!]
     bookCount(author: String): Int!
     authorCount: Int!
+    me: User
   }
 
   type Mutation {
@@ -39,6 +51,14 @@ const typeDefs = gql`
       genres: [String!]
     ): Book!
     editAuthor(name: String!, setBornTo: Int!): Author
+    createUser(
+      username: String!
+      favouriteGenre: String!
+    ): User
+    login(
+      username: String!
+      password: String!
+    ): Token
   }
 `
 
@@ -109,7 +129,17 @@ const resolvers = {
 
       author.born = args.setBornTo
 
-      return author.save()
+      console.log(author)
+
+      try {
+        await author.save()
+      } catch (error) {
+        throw new UserInputError(error.message, {
+          invalidArgs: args,
+        })
+      }
+
+      return author      
     }
   }
 }
