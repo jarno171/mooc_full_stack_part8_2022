@@ -75,10 +75,10 @@ const resolvers = {
     allBooks: async (root, args) => {
 
       if (!args.genre) {
-        return Book.find({})
+        return Book.find({}).populate('author')
       }
 
-      return Book.find( { genres: { $in: [ args.genre ] } } )
+      return Book.find( { genres: { $in: [ args.genre ] } } ).populate('author')
     },
     allAuthors: async (root, args) => {
       if (!args.author) {

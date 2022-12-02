@@ -15,7 +15,7 @@ const Books = ({ books }) => {
                   {book.title}
                 </td>
                 <td>
-                  {book.author}
+                  {book.author.name}
                 </td>
                 <td>
                   {book.published}
