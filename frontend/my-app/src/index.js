@@ -8,6 +8,7 @@ import {
   HttpLink,
   InMemoryCache,
 } from '@apollo/client'
+import React from 'react'
 
 const authLink = setContext((_, { headers }) => {
   const token = localStorage.getItem('books-user-token')

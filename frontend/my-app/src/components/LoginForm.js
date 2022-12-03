@@ -14,6 +14,7 @@ const LoginForm = ({ setError, setToken, errorMessage }) => {
   const [ login, result ] = useMutation(LOGIN, {
     onError: (error) => {
       setError(error.graphQLErrors[0].message)
+      
       setTimeout(() => {
         setError('')
       }, 5000)

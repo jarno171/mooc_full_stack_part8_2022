@@ -27,7 +27,7 @@ const App = () => {
     <>
       <NavBar authors={authors.data.allAuthors} books={books.data.allBooks} token={token} setToken={setToken} />
     </>
-  );
+  )
 }
 
 export default App;
