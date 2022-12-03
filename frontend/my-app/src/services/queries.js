@@ -17,7 +17,8 @@ export const GET_BOOKS = gql`
       author {
         name
       },
-      published
+      published,
+      genres
     }
   }
 `
