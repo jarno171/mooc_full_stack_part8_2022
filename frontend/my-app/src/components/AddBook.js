@@ -11,7 +11,14 @@ const AddBook = () => {
   const [newGenresList, setNewGenresList] = useState([])
 
   const [ createBook ] = useMutation(CREATE_BOOK, {
-    refetchQueries: [ { query: GET_BOOKS }, { query: GET_AUTHORS }  ]
+    update: (cache, response) => {
+      cache.updateQuery({ query: GET_BOOKS }, (data) => {
+        console.log(data)
+        return {
+          allBooks: data.allBooks.concat(response.data.addBook),
+        }
+      })
+    },
   })
 
   const addBook = (event) => {
