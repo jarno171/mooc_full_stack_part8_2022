@@ -2,15 +2,21 @@ import ErrorBar from './ErrorBar'
 import { LOGIN } from '../services/queries'
 import { useState, useEffect } from 'react'
 import { useMutation } from '@apollo/client'
+import { useNavigate } from 'react-router-dom'
 
-const LoginForm = ({ setError, setToken }) => {
+const LoginForm = ({ setError, setToken, errorMessage }) => {
 
   const [username, setUsername] = useState('')
   const [password, setPassword] = useState('')
 
+  const navigate = useNavigate()
+
   const [ login, result ] = useMutation(LOGIN, {
     onError: (error) => {
       setError(error.graphQLErrors[0].message)
+      setTimeout(() => {
+        setError('')
+      }, 5000)
     }
   })
 
@@ -19,6 +25,8 @@ const LoginForm = ({ setError, setToken }) => {
       const token = result.data.login.value
       setToken(token)
       localStorage.setItem('books-user-token', token)
+
+      navigate("/")
     }
   }, [result.data]) // eslint-disable-line
 
@@ -32,7 +40,7 @@ const LoginForm = ({ setError, setToken }) => {
     <div>
       <h2>Login</h2>
 
-      {/*< ErrorBar message={errorMessage} />*/}
+      {< ErrorBar message={errorMessage} />}
 
       <form onSubmit={submit}>
         <div>

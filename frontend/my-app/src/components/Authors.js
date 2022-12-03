@@ -5,7 +5,7 @@ import { EDIT_BORN, GET_AUTHORS } from '../services/queries'
 import Select from 'react-select'
 
 
-const Authors = ({ authors }) => {
+const Authors = ({ authors, token }) => {
 
   const [name, setName] = useState('')
   const [born, setBorn] = useState('')
@@ -25,6 +25,8 @@ const Authors = ({ authors }) => {
 
   if (!_.isEmpty(authors)) {
     const options = authors.map((author) => { return { value: author.name, label: author.name } } )
+
+    const showWhenVisible = { display: token ? '' : 'none' }
 
     return (
       <>
@@ -51,9 +53,9 @@ const Authors = ({ authors }) => {
           </table>
         </div>
 
-        <h3>set birthyear</h3>
+        <div style={showWhenVisible}>
+          <h3>set birthyear</h3>
 
-        <div>
           <form onSubmit={editBorn}>
             name:
             <Select options={options} 
