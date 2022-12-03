@@ -1,22 +1,29 @@
 import _ from 'lodash'
 import { useState } from 'react'
+import { useQuery, } from '@apollo/client'
+import { GET_BOOKS, GET_GENRES, } from '../services/queries'
 
-const Books = ({ books }) => {
+const Books = () => {
 
   const [genreFilter, setGenreFilter] = useState('')
 
-  if (!_.isEmpty(books)) {
-    const genres = books.reduce((accumulator, book) => accumulator.concat(book.genres), [])
+  const books = useQuery(GET_BOOKS, {
+    variables: { genreToSearch: genreFilter },
+  })
+
+  const genres = useQuery(GET_GENRES)
+
+  if (books.loading || genres.loading)  {
+    return <div>loading...</div>
+  }
+
+  const booksData = books.data.allBooks
+  const genreData = genres.data.allBooks
+
+  if (!_.isEmpty(booksData)) {
+    const genres = genreData.reduce((accumulator, book) => accumulator.concat(book.genres), [])
 
     const uniqueGenres = _.uniq(genres)
-
-    let booksToShow
-
-    if (genreFilter) {
-      booksToShow = books.filter((book) => book.genres.includes(genreFilter))
-    } else {
-      booksToShow = books
-    }
 
     return (
       <>
@@ -26,7 +33,7 @@ const Books = ({ books }) => {
               <tr>
                 <th></th><th>author</th><th>published</th>
               </tr>
-              {booksToShow.map((book) => (
+              {booksData.map((book) => (
                 <tr key={book.title}>
                   <td>
                     {book.title}
