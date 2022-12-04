@@ -1,7 +1,7 @@
 import { useState } from 'react'
 import { useMutation } from '@apollo/client'
 import { CREATE_BOOK, GET_BOOKS, } from '../services/queries'
-import _ from 'lodash'
+import { updateCacheAllBooks } from '../services/utils'
 
 const AddBook = () => {
 
@@ -14,25 +14,7 @@ const AddBook = () => {
   const [ createBook ] = useMutation(CREATE_BOOK, {
     update: (cache, response) => {
 
-      cache.updateQuery({ query: GET_BOOKS, variables: { genreToSearch: "" } }, (data) => {
-        if (!_.isEmpty(data)) {
-          return {
-            allBooks: data.allBooks.concat(response.data.addBook),
-          }
-        }
-      })
-
-      if (response.data.addBook.genres) {
-        response.data.addBook.genres.forEach(genre => {
-          cache.updateQuery({ query: GET_BOOKS, variables: { genreToSearch: genre } }, (data) => {
-            if (!_.isEmpty(data)) {
-              return {
-                allBooks: data.allBooks.concat(response.data.addBook),
-              }
-            }
-          })
-        })
-      }
+      updateCacheAllBooks(cache, GET_BOOKS, response.data.addBook, response.data.addBook.genres)
     },
   })
 

@@ -48,6 +48,16 @@ export const CREATE_BOOK = gql`
   }
 `
 
+export const BOOK_ADDED = gql`
+  subscription {
+    bookAdded {
+      ...BookDetails
+    }
+  }
+
+  ${BOOK_DETAILS}
+`
+
 export const EDIT_BORN = gql`
   mutation editAuthor($name: String!, $setBornTo: Int!) {
     editAuthor(name: $name, setBornTo: $setBornTo) {
