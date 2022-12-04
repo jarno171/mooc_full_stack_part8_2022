@@ -18,6 +18,8 @@ const App = () => {
       const addedBook = data.data.bookAdded
       
       updateCacheAllBooks(client.cache, GET_BOOKS, addedBook, addedBook.genres)
+
+      window.alert(`new book ${addedBook.title} was added`)
     }
   })
 

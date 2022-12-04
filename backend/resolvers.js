@@ -13,7 +13,9 @@ const pubsub = new PubSub()
 
 const resolvers = {
   Author: {
-    bookCount: ({ name }) => Book.find({ author: name }).length
+    bookCount: async (data, args, { loaders }) => {
+      return (await loaders.book.load(data)).length
+    }
   },
 
   Query: {

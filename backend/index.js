@@ -1,6 +1,8 @@
 const { ApolloServer } = require('apollo-server-express')
 const { ApolloServerPluginDrainHttpServer } = require('apollo-server-core')
 const { makeExecutableSchema } = require('@graphql-tools/schema')
+const DataLoader = require('dataloader')
+
 const mongoose = require('mongoose')
 const config = require('./utils/config')
 const express = require('express')
@@ -12,6 +14,7 @@ const { WebSocketServer } = require('ws')
 const { useServer } = require('graphql-ws/lib/use/ws')
 
 const User = require('./models/user')
+const Book = require('./models/book')
 
 const jwt = require('jsonwebtoken')
 
@@ -35,6 +38,14 @@ const start = async () => {
 
   const serverCleanup = useServer({ schema }, wsServer)
 
+  const batchBooks = async (keys) => {
+    const books = await Book.find({
+      author: keys
+    })
+
+    return keys.map(key => books.filter(book => book.author.equals(key._id)))
+  }
+
   const server = new ApolloServer({
     schema,
     context: async ({ req }) => {
@@ -42,7 +53,12 @@ const start = async () => {
       if (auth && auth.toLowerCase().startsWith('bearer ')) {
         const decodedToken = jwt.verify(auth.substring(7), JWT_SECRET)
         const currentUser = await User.findById(decodedToken.id)
-        return { currentUser }
+        return { 
+          currentUser,
+          loaders: {
+            book: new DataLoader(keys => batchBooks(keys))
+          }
+        }
       }
     },
     plugins: [
