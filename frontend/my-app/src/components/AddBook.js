@@ -12,12 +12,13 @@ const AddBook = () => {
   const [newGenresList, setNewGenresList] = useState([])
 
   const [ createBook ] = useMutation(CREATE_BOOK, {
-    //refetchQueries: [{ query: GET_BOOKS, variables: { genreToSearch: "" } }]
     update: (cache, response) => {
 
       cache.updateQuery({ query: GET_BOOKS, variables: { genreToSearch: "" } }, (data) => {
-        return {
-          allBooks: data.allBooks.concat(response.data.addBook),
+        if (!_.isEmpty(data)) {
+          return {
+            allBooks: data.allBooks.concat(response.data.addBook),
+          }
         }
       })
 
