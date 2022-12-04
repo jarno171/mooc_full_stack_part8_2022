@@ -1,7 +1,7 @@
 import _ from 'lodash'
 import { useState } from 'react'
 import { useQuery, } from '@apollo/client'
-import { GET_BOOKS, GET_GENRES, } from '../services/queries'
+import { GET_BOOKS, } from '../services/queries'
 
 const Books = () => {
 
@@ -11,7 +11,9 @@ const Books = () => {
     variables: { genreToSearch: genreFilter },
   })
 
-  const genres = useQuery(GET_GENRES)
+  const genres = useQuery(GET_BOOKS, {
+    variables: { genreToSearch: ""}
+  })
 
   if (books.loading || genres.loading)  {
     return <div>loading...</div>

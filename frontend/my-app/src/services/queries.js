@@ -10,25 +10,24 @@ export const GET_AUTHORS = gql`
   }
 `
 
-export const GET_BOOKS = gql`
-  query($genreToSearch: String) {
-    allBooks(genre: $genreToSearch)  {
-      title,
-      author {
-        name
-      }
-      published,
-      genres
+const BOOK_DETAILS = gql`
+  fragment BookDetails on Book {
+    title,
+    author {
+      name
     }
+    published,
+    genres
   }
 `
 
-export const GET_GENRES = gql`
-  query {
-    allBooks  {
-      genres
+export const GET_BOOKS = gql`
+  query($genreToSearch: String) {
+    allBooks(genre: $genreToSearch)  {
+      ...BookDetails
     }
   }
+  ${BOOK_DETAILS}
 `
 
 export const CREATE_BOOK = gql`
